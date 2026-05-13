@@ -1,7 +1,5 @@
 require('dotenv').config()
 const express = require('express')
-const jwt = require('jsonwebtoken')
-const { prismacontroller } = require('./lib/prisma')
 const sign_up = require('./router/signup')
 
 const app = express()
@@ -12,7 +10,6 @@ app.use(express.json())
 
 // Router
 app.use('/sign_up' , sign_up)
-
 
 
 // Start Server 
