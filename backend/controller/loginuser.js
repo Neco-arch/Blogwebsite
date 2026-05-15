@@ -25,7 +25,7 @@ async function loginuser(req,res) {
         })
     }
 
-    jwt.sign({userid : user.Userid ,user : user.username , password : user.password } , process.env.SECERT , {expiresIn : '1d'} , (error , token) => {
+    jwt.sign({userid : user.Userid ,user : user.username , password : user.password , userstatus : user.user_status } , process.env.SECERT , {expiresIn : '1d'} , (error , token) => {
         res.json({
             token
         })

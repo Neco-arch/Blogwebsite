@@ -8,11 +8,12 @@ datasource db {
 }
 
 model User {
-  Userid    Int    @id @default(autoincrement())
-  email     String @unique
-  username  String @unique @db.VarChar(30)
-  password  String
-  post_user Post[]
+  Userid      Int         @id @default(autoincrement())
+  email       String      @unique
+  username    String      @unique @db.VarChar(30)
+  password    String
+  user_status Userstatus?
+  post_user   Post[]
 }
 
 model Post {
@@ -21,6 +22,7 @@ model Post {
   author     String
   text       String
   poststatus PostStatus
+  time       DateTime 
   userid     Int
   comments   Comment[]
   user       User       @relation(fields: [userid], references: [Userid])
@@ -36,4 +38,9 @@ model Comment {
 enum PostStatus {
   draft
   publish
+}
+
+enum Userstatus {
+  vistor
+  owner
 }

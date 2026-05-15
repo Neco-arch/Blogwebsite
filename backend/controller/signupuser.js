@@ -22,6 +22,7 @@ async function CreateUser(req, res) {
         username: requestbody.username,
         password: eycrptedpasword,
         email: requestbody.email,
+        user_status : 'vistor',
       },
 
     });
