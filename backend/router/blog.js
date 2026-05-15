@@ -1,11 +1,13 @@
 const express = require('express')
-const { getblog } = require('../controller/getblog')
+const { getblog , getspecificblog} = require('../controller/getblog')
 const { Authuser , VerifyAccess } = require('../controller/authuser')
 const {Createpost , Editpost , Deletepost , ReleasePost , VistBlogpanel} = require('../controller/crudblog')
 
 const blogroute = express()
 
 blogroute.get('/' , getblog)
+
+blogroute.get('/blog/:postid' , getspecificblog)
 
 blogroute.get('/blogpanel' , Authuser , VerifyAccess ,VistBlogpanel)
 

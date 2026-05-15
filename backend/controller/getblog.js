@@ -11,6 +11,17 @@ async function getblog(req,res) {
     })
 }
 
+async function getspecificblog(req,res) {
+    const result = await prismacontroller.post.findUnique({
+        where : {
+            postid : req.params.postid
+        }
+    })
+    res.json(result)
+}
+
+
 module.exports = {
-    getblog
+    getblog ,
+    getspecificblog
 }
