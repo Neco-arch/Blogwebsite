@@ -2,87 +2,91 @@ require("dotenv").config();
 const { prismacontroller } = require("../lib/prisma");
 
 async function VistBlogpanel(req, res) {
-  res.json("Welcome back owner" );
+  res.json({ message: "Welcome back owner" });
 }
-
-
 
 async function Createpost(req, res) {
   try {
-    const reqbody = req.body;
+    const { username, userid, title, content } = req.body;
 
-    const vaildate = await prismacontroller.post.findUnique({
-      where: {
-        title: reqbody.title,
-      },
+    const duplicate = await prismacontroller.post.findUnique({
+      where: { title },
     });
-    if (!vaildate) {
-      res.status(409);
+
+    if (duplicate) {
+      return res.status(409).json({ message: "A post with this title already exists" });
     }
 
     const result = await prismacontroller.post.create({
       data: {
-        author: reqbody.username,
-        title: reqbody.title,
+        author:     username,
+        title:      title,
         poststatus: "draft",
-        text: reqbody.content,
+        text:       content,
         user: {
-          connect: reqbody.userid,
+          connect: { id: userid },  
         },
       },
     });
 
-    res.status(201).json({
-      data: result,
-    });
+    return res.status(201).json({ data: result });
+
   } catch (error) {
-    res.status(400);
+    console.error(error);
+    return res.status(400).json({ message: "Failed to create post" });
   }
 }
 
 async function Editpost(req, res) {
   try {
-    const reqbody = req.body;
+    const { postid, newtitle, newcontent } = req.body;
+
     const result = await prismacontroller.post.update({
-      where: {
-        postid: reqbody.postid,
-      },
+      where: { postid },
       data: {
-        title: reqbody.newtitle,
-        text: reqbody.newcontent,
+        title: newtitle,
+        text:  newcontent,
       },
     });
-    res.status(100).json(result);
+
+    return res.status(200).json({ data: result }); 
+
   } catch (error) {
-    res.status(400);
+    console.error(error);
+    return res.status(400).json({ message: "Failed to edit post" });
   }
 }
 
 async function Deletepost(req, res) {
   try {
-    const reqbody = req.body;
-    const result = await prismacontroller.post.delete({
-      where: {
-        postid: reqbody.postid,
-      },
+    const { postid } = req.params; 
+    await prismacontroller.post.delete({
+      where: { postid },
     });
+
+    return res.status(200).json({ message: "Post deleted successfully" }); 
+
   } catch (error) {
-    res.status(400);
+    console.error(error);
+    return res.status(400).json({ message: "Failed to delete post" });
   }
 }
 
-async function ReleasePost(req, res) { 
-    const reqbody = req.body;    
-    const result = await prismacontroller.post.update({
-      where: {
-        postid: reqbody.postid,
-      },
-      data : {
-        poststatus : 'publish'
-      }
+async function ReleasePost(req, res) {
+  try {
+    const { postid } = req.params; // same here
+
+    await prismacontroller.post.update({
+      where: { postid },
+      data: { poststatus: "publish" },
     });
 
-    res.sendStatus(201)
+    return res.status(200).json({ message: "Post published successfully" }); 
+
+  } catch (error) {
+    console.error(error);
+    return res.status(400).json({ message: "Failed to release post" });
+  }
 }
 
 module.exports = {

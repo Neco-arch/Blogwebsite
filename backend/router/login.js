@@ -6,11 +6,7 @@ const loginroute = express()
 
 
 loginroute.get('/' , (req,res) => {
-    res.json(
-        {
-            massage : "Working"
-        }
-    )
+    res.statusCode(400)
 })
 
 loginroute.post('/' , loginuser)

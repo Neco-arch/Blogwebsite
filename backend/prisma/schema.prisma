@@ -22,17 +22,19 @@ model Post {
   author     String
   text       String
   poststatus PostStatus
-  time       DateTime 
+  time       DateTime   @default(now())
   userid     Int
   comments   Comment[]
   user       User       @relation(fields: [userid], references: [Userid])
 }
 
 model Comment {
-  commentid       Int    @id @default(autoincrement())
+  commentid       Int      @id @default(autoincrement())
+  text            String
+  time            DateTime @default(now())
   author_username String
   postId          Int
-  post            Post   @relation(fields: [postId], references: [postid])
+  post            Post     @relation(fields: [postId], references: [postid])
 }
 
 enum PostStatus {
