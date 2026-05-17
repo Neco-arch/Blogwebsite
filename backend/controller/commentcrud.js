@@ -1,11 +1,11 @@
-const { text } = require('express')
 const { prismacontroller } = require('../lib/prisma.js')
 
 async function Getpostcomment(req, res) {
-    const { commentid } = req.params
+    const { postid } = req.params
+    const ConvertedNum = parseInt(postid)
     const result = await prismacontroller.comment.findMany({
         where: {
-            postId: commentid
+            postId: postid
         }
     })
     res.json({
@@ -14,11 +14,12 @@ async function Getpostcomment(req, res) {
 }
 
 
+
 async function CreateComment(req, res) {
     const reqbody = req.body
     const result = await prismacontroller.comment.create({
         data: {
-            postId: reqbody.blogid,
+            postId: parseInt(reqbody.blogid),
             text: reqbody.text,
             author_username: reqbody.username
         }
@@ -32,7 +33,7 @@ async function DeleteComment(req, res) {
     const { commentid } = req.params
     const result = await prismacontroller.comment.delete({
         where: {
-            postId: reqbody.postid
+            commentid: parseInt(commentid)
         }
     })
     res.json({
@@ -46,7 +47,7 @@ async function EditComment(req, res) {
     const { commentid } = req.params
     const result = await prismacontroller.comment.update({
         where: {
-            commentid: commentid
+            commentid: parseInt(commentid)
         },
         data: {
             text: req.body.text

@@ -1,12 +1,19 @@
 require('dotenv').config()
 const { prismacontroller } = require("../lib/prisma.js");
 const bcrypt = require("bcrypt");
+const e = require('express');
 const jwt = require("jsonwebtoken");
 
 async function CreateUser(req, res) {
   const requestbody = req.body;
-  console.log(req.body)
-  const eycrptedpasword = await bcrypt.hash(req.body.password , 10);
+
+  if (req.body === undefined) {
+    res.json("No body was found")
+  }
+  if (req.body.password === undefined || requestbody.username === undefined || requestbody.email === undefined) {
+    res.json("Someinfo is missing")
+  }
+  const eycrptedpasword = await bcrypt.hash(req.body.password, 10);
   const vaildateEmail_User = await prismacontroller.user.findFirst({
     where: {
       username: requestbody.username,
@@ -14,7 +21,7 @@ async function CreateUser(req, res) {
     },
   });
 
-  
+
 
   if (vaildateEmail_User === null) {
     await prismacontroller.user.create({
@@ -22,7 +29,7 @@ async function CreateUser(req, res) {
         username: requestbody.username,
         password: eycrptedpasword,
         email: requestbody.email,
-        user_status : 'vistor',
+        user_status: 'vistor',
       },
 
     });

@@ -20,7 +20,7 @@ model Post {
   postid     Int        @id @default(autoincrement())
   title      String
   author     String
-  text       String
+  content    String
   poststatus PostStatus
   time       DateTime   @default(now())
   userid     Int

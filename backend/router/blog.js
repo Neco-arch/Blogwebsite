@@ -1,7 +1,7 @@
 const express = require('express')
 const { getblog, getspecificblog } = require('../controller/getblog')
 const { Authuser, VerifyAccess } = require('../controller/authuser')
-const { Createpost, Editpost, Deletepost, ReleasePost, VistBlogpanel } = require('../controller/crudblog')
+const { Createpost, editPost, Deletepost, ReleasePost, VistBlogpanel } = require('../controller/crudblog')
 
 const blogroute = express()
 
@@ -13,7 +13,7 @@ blogroute.get('/blogpanel', Authuser, VerifyAccess, VistBlogpanel)
 
 blogroute.post('/blog', Authuser, VerifyAccess, Createpost)
 
-blogroute.put('/blog/:postid', Authuser, VerifyAccess, Editpost)
+blogroute.put('/blog/:postid', Authuser, VerifyAccess, editPost)
 
 blogroute.delete('/blog/:postid', Authuser, VerifyAccess, Deletepost)
 
