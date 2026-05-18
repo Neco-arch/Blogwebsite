@@ -4,12 +4,16 @@ const sign_up = require('./router/signup')
 const login = require('./router/login')
 const blog = require('./router/blog')
 const comment = require('./router/comment')
+const cors = require('cors');
 
 const app = express()
 
 // Middleware
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
+app.use(cors({
+  origin: 'http://localhost:5173'
+}));
 
 // Router
 app.use('/sign_up', sign_up)
@@ -19,5 +23,5 @@ app.use('/', comment)
 // Start Server 
 
 app.listen(process.env.PORT, () => {
-    console.log("api is ready")
+  console.log("Server is running")
 })
