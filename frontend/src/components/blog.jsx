@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import axios, { Axios } from "axios";
-import { renderToPipeableStream } from "react-dom/server";
+import { Outlet } from "react-router";
+import '../css/blog.css'
 
 function blogpage() {
   const [blogs, setblogs] = useState([]);
@@ -19,20 +20,29 @@ function blogpage() {
     }
   };
 
+
   useEffect(() => {
     fetchblogs();
   } , []);
 
 
 if (Ready_display) {
+  console.log(blogs)
   return (
     <>
+    <h1>Welcome to blog post</h1>
+    <h3>Where i post something useful</h3>
+    <div className="BlogWrapper">
       {blogs.map((value, index) => (
-        <div key={index}>
+        <div key={index} onClick={() => {
+          window.location.href = `http://localhost:5000/blog/${value.postid}`
+        }}>
           <h2>Title : {value.title}</h2>
           <h3>Author : {value.author}</h3>
+          <h4>Date : {new Date(value.time).toLocaleString()}</h4>
         </div>
       ))}
+    </div>
     </>
   );
 }
