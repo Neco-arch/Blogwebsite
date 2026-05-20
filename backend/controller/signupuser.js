@@ -1,46 +1,44 @@
 require('dotenv').config()
 const { prismacontroller } = require("../lib/prisma.js");
 const bcrypt = require("bcrypt");
-const e = require('express');
 const jwt = require("jsonwebtoken");
 
 async function CreateUser(req, res) {
   const requestbody = req.body;
 
-  if (req.body === undefined) {
-    res.json("No body was found")
+  if (!requestbody) {
+    return res.status(400).json({ message: "No body was found" });
   }
-  if (req.body.password === undefined || requestbody.username === undefined || requestbody.email === undefined) {
-    res.json("Someinfo is missing")
+
+  if (!requestbody.password || !requestbody.username || !requestbody.email) {
+    return res.status(400).json({ message: "Some info is missing" });
   }
-  const eycrptedpasword = await bcrypt.hash(req.body.password, 10);
-  const vaildateEmail_User = await prismacontroller.user.findFirst({
-    where: {
-      username: requestbody.username,
-      email: requestbody.email,
-    },
-  });
 
+  try {
+    const encryptedPassword = await bcrypt.hash(requestbody.password, 10);
 
+    console.log(encryptedPassword)
 
-  if (vaildateEmail_User === null) {
     await prismacontroller.user.create({
       data: {
         username: requestbody.username,
-        password: eycrptedpasword,
+        password: encryptedPassword,
         email: requestbody.email,
-        user_status: 'vistor',
+        user_status: 'vistor'
       },
-
     });
 
-    res.json("Sign up successful")
-  } else {
-    res.json({
-      massage: "username or email has been taken",
-    });
+    return res.status(201).json({ message: "Sign up successful" });
+
+  } catch (error) {
+    if (error.code === 'P2002') {
+      return res.status(409).json({ message: "Username or email has already been taken" });
+    }
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
   }
-
 }
 
 module.exports = { CreateUser };
+
+

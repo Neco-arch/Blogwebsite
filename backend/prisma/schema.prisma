@@ -12,7 +12,7 @@ model User {
   email       String      @unique
   username    String      @unique @db.VarChar(30)
   password    String
-  user_status Userstatus?
+  user_status Userstatus
   post_user   Post[]
 }
 

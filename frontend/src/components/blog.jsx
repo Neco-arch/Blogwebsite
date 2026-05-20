@@ -35,7 +35,7 @@ if (Ready_display) {
     <div className="BlogWrapper">
       {blogs.map((value, index) => (
         <div key={index} onClick={() => {
-          window.location.href = `http://localhost:5000/blog/${value.postid}`
+          window.location.href = `http://localhost:5173/blog/${value.postid}`
         }}>
           <h2>Title : {value.title}</h2>
           <h3>Author : {value.author}</h3>

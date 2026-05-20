@@ -1,20 +1,20 @@
 const { prismacontroller } = require('../lib/prisma')
 
-async function getblog(req,res) {
+async function getblog(req, res) {
     const result = await prismacontroller.post.findMany({
-        where : {
-            poststatus : "publish"
+        where: {
+            poststatus: "publish"
         }
     })
     res.json({
-        post : result
+        post: result
     })
 }
 
-async function getspecificblog(req,res) {
+async function getspecificblog(req, res) {
     const result = await prismacontroller.post.findUnique({
-        where : {
-            postid : req.params.postid
+        where: {
+            postid: parseInt(req.params.postid)
         }
     })
     res.json(result)
@@ -22,6 +22,6 @@ async function getspecificblog(req,res) {
 
 
 module.exports = {
-    getblog ,
+    getblog,
     getspecificblog
 }
