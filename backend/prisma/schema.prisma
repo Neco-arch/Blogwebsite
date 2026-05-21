@@ -8,9 +8,9 @@ datasource db {
 }
 
 model User {
-  Userid      Int         @id @default(autoincrement())
-  email       String      @unique
-  username    String      @unique @db.VarChar(30)
+  Userid      Int        @id @default(autoincrement())
+  email       String     @unique
+  username    String     @unique @db.VarChar(30)
   password    String
   user_status Userstatus
   post_user   Post[]

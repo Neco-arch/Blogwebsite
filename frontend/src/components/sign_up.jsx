@@ -14,11 +14,14 @@ function RenderSignup() {
         e.preventDefault()
         try {
             if (formData.password !== formData.confirmPassword) {
+                alert("Password and confirmPassword isn't the same")
                 window.location.href = "/signup"
             }
-            await axios.post('http://localhost:5000/sign_up' , formData)
+            const result = await axios.post('http://localhost:5000/sign_up' , formData)
+            console.log(result.status)
         } catch(error) {
-            console.log(error)
+            alert("Username or email has been taken")
+            window.location.href = "/signup"
         }
     }
 

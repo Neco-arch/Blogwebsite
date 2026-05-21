@@ -17,7 +17,6 @@ async function CreateUser(req, res) {
   try {
     const encryptedPassword = await bcrypt.hash(requestbody.password, 10);
 
-    console.log(encryptedPassword)
 
     await prismacontroller.user.create({
       data: {

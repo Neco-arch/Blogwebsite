@@ -5,6 +5,7 @@ import Blog from './components/blog.jsx'
 import SpecificBlog from './components/blogpage.jsx'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Signup from './components/sign_up.jsx'
+import Login from './components/login.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -13,6 +14,7 @@ createRoot(document.getElementById('root')).render(
         <Route path='/' element={<Blog />} />
         <Route path='/blog/:postid' element={<SpecificBlog/>}></Route>
         <Route path='/signup' element={<Signup/>}></Route>
+        <Route path='/login' element={<Login/>}></Route>
       </Routes>
     </BrowserRouter>
   </StrictMode>
