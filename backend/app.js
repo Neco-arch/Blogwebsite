@@ -4,6 +4,7 @@ const sign_up = require('./router/signup')
 const login = require('./router/login')
 const blog = require('./router/blog')
 const comment = require('./router/comment')
+const decodejwt = require('./router/jwt')
 const cors = require('cors');
 
 const app = express()
@@ -20,6 +21,7 @@ app.use('/sign_up', sign_up)
 app.use('/login', login)
 app.use('/', blog)
 app.use('/', comment)
+app.use('/', decodejwt)
 // Start Server 
 
 app.listen(process.env.PORT, () => {

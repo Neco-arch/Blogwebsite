@@ -1,5 +1,5 @@
 const express = require('express')
-const { getblog, getspecificblog } = require('../controller/getblog')
+const { getblog, getspecificblog, getallblogs } = require('../controller/getblog')
 const { Authuser, VerifyAccess } = require('../controller/authuser')
 const { Createpost, editPost, Deletepost, ReleasePost, VistBlogpanel } = require('../controller/crudblog')
 
@@ -7,7 +7,11 @@ const blogroute = express()
 
 blogroute.get('/', getblog)
 blogroute.get('/blog/:postid', getspecificblog)
+
+//Visit blog 
 blogroute.get('/blogpanel', Authuser, VerifyAccess, VistBlogpanel)
+
+blogroute.get('/allblog', Authuser, VerifyAccess, getallblogs)
 
 // Restful
 
