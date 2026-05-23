@@ -1,84 +1,179 @@
-import { useState, useEffect } from "react"
-import axios from "axios"
+import { useState, useEffect, useRef } from "react";
+import axios from "axios";
+import { Editor } from "@tinymce/tinymce-react";
 
 axios.interceptors.request.use((config) => {
-    const token = localStorage.getItem('authtoken')
-    if (token) {
-        config.headers['Authorization'] = `Bearer ${token}`
-    }
-    return config  
-})
+  const token = localStorage.getItem("authtoken");
+  if (token) {
+    config.headers["Authorization"] = `Bearer ${token}`;
+  }
+  return config;
+});
 
 function Dashboard() {
-    const [userdata , saveuserdata] = useState({})
-    const [result, setResult] = useState(null)
-    const [blogs , saveblog] = useState([])
-    const [Newpostdata , SaveNewpostdata] = useState({})
+  const editorRef = useRef(null);
+  const [userdata, saveuserdata] = useState({});
+  const [result, setResult] = useState(null);
+  const [blogs, saveblog] = useState([]);
+  const [Newpostdata, SaveNewpostdata] = useState({
+    title: "",
+    content: "Start typing here...",
+    status: "",
+  });
+  const [OCdialog, setOCdialog] = useState(false);
 
-    const callApi = async () => {
-        try {
-            const response = await axios.get('http://localhost:5000/blogpanel')
-            setResult(response.data)  
-        } catch (error) {
-            if (error.response?.status === 401) {
-                window.location.href = '/'  
-            }
+  const callApi = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/blogpanel");
+      setResult(response.data);
+    } catch (error) {
+      if (error.response?.status === 401) {
+        window.location.href = "/";
+      }
 
-            if (error.response.status === 403) {
-                alert("Forbidden access")
-                window.location.href = '/'
-            }
-            console.error(error)
-        }
+      if (error.response.status === 403) {
+        alert("Forbidden access");
+        window.location.href = "/";
+      }
+      console.error(error);
     }
+  };
 
-    const getallblog = async () => {
-        try {
-            const response = await axios.get('http://localhost:5000/allblog')
-            saveblog(response.data)
-        } catch (error) {
-            if (error.response.status === 403) {
-                alert("Forbidden access")
-                window.location.href = '/'
-            }
-        }
+  const getallblog = async () => {
+    try {
+      const response = await axios.get("http://localhost:5000/allblog");
+      saveblog(response.data);
+    } catch (error) {
+      if (error.response.status === 403) {
+        alert("Forbidden access");
+        window.location.href = "/";
+      }
     }
+  };
 
-    const decodetoken = async () => {
-        try {
-            const decodedtoken = await axios.post('http://localhost:5000/decodejwt' , { token: localStorage.getItem('authtoken') })
-            saveuserdata(decodedtoken.data.decoded)
-        } catch(error) {
-            console.log(error)
-       }
+  const decodetoken = async () => {
+    try {
+      const decodedtoken = await axios.post("http://localhost:5000/decodejwt", {
+        token: localStorage.getItem("authtoken"),
+      });
+      saveuserdata(decodedtoken.data.decoded);
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    const createnewpost = async () => {
+  const onchangenewpost = (e) => {
+    SaveNewpostdata({ ...Newpostdata, [e.target.name]: e.target.value });
+  };
 
+  const onEditorChange = (content) => {
+    SaveNewpostdata((prev) => ({ ...prev, content }));
+  };
+
+  const createnewpost = async (e) => {
+    setOCdialog(false)
+    e.preventDefault();
+    try {
+        const data = {...Newpostdata , 
+        username: userdata.user,
+        userid: parseInt(userdata.userid)
+      }
+      console.log(data)
+      const result = await axios.post(
+        "http://localhost:5000/Createblog",
+        data
+      );
+      SaveNewpostdata({
+        title:"",
+        content:"Start typing here...",
+        status:"",
+      });
+
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    useEffect(() => {
-        callApi()
-        decodetoken()
-        getallblog()
-    }, [])
+  const editpost = async (e) => {
+  }
 
+  useEffect(() => {
+    callApi();
+    decodetoken();
+    getallblog();
+  }, []);
 
-    return (
-        <>
+  return (
+    <>
+      <div>
+        <h2>Welcome back owner</h2>
         <div>
-            <h2>Welcome back owner</h2>
-            <div>
-                <button>New Post</button>
-            </div>
+          <button
+            onClick={() => {
+              setOCdialog(true);
+            }}
+          >
+            New Post
+          </button>
         </div>
-        <dialog>
-            <form onSubmit={createnewpost}>
-                
-            </form>
-        </dialog>
-        </>
-    )
+      </div>
+      <div className="All_blog_post">
+        {blogs.map((value,index) => (
+            <div key={index}>
+                <h2>{value.title}</h2>
+                <h3>status : {value.poststatus}</h3>
+
+            </div>
+        ))}
+      </div>
+      <dialog open={OCdialog} className="Createnewpost">
+        <form onSubmit={createnewpost}>
+          <label>
+            Title of article :{" "}
+            <input
+              type="text"
+              name="title"
+              value={Newpostdata.title}
+              onChange={onchangenewpost}
+            />
+          </label>
+          <Editor
+            apiKey={import.meta.env.VITE_API_KEY}
+            onInit={(evt, editor) => (editorRef.current = editor)}
+            initialValue="<p>Start typing here...</p>"
+            init={{
+              height: 500,
+              menubar: false,
+              plugins: [
+                "lists",
+                "link",
+                "image",
+                "code",
+                "fullscreen",
+                "wordcount",
+              ],
+              toolbar:
+                "undo redo | formatselect | bold italic underline | " +
+                "alignleft aligncenter alignright | bullist numlist | link image | code fullscreen",
+            }}
+            value={Newpostdata.content}
+            onEditorChange={onEditorChange}
+          />
+          <input type="submit"/>
+        </form>
+        <button
+          onClick={() => {
+            setOCdialog(false);
+          }}
+        >
+          Close Dialog
+        </button>
+      </dialog>
+      <dialog>
+        
+      </dialog>
+    </>
+  );
 }
 
-export default Dashboard
+export default Dashboard;

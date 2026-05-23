@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Signup from './components/sign_up.jsx'
 import Login from './components/login.jsx'
 import Dashboard from './components/admincomponents/Dashboard.jsx'
+import dotenv from 'dotenv';
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

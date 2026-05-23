@@ -6,7 +6,6 @@ function Decrpytjwt(req, res) {
 
     try {
         const decoded = jwt.decode(token, process.env.SECRET);
-        console.log(decoded)
         res.json({ decoded });
     } catch (err) {
         res.status(401).json({ error: 'Invalid token' });

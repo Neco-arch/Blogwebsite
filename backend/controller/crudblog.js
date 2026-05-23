@@ -9,27 +9,20 @@ async function Createpost(req, res) {
   try {
     const { username, userid, title, content } = req.body;
 
-    if (
-      username === undefined ||
-      userid === undefined ||
-      title === undefined ||
-      content === undefined
-    ) {
-      res.json("Body request is enough or  missing");
+    if (!username || !userid || !title || !content) {
+      return res.status(400).json({ message: "Body request is incomplete or missing" });
     }
 
-    const finduserid = await prismacontroller.user.findUnique({
-      where: {
-        Userid: userid,
-      },
+    if (isNaN(parseInt(userid))) {
+      return res.status(400).json({ message: "userid must be a number" });
+    }
+
+    const finduserid = await prismacontroller.user.findFirst({
+      where: { Userid: userid },
     });
 
     if (!finduserid) {
-      res.json("User not found");
-    }
-
-    if (typeof parseInt(userid) !== "number") {
-      res.json("userid isn't a number");
+      return res.status(404).json({ message: "User not found" });
     }
 
     const duplicate = await prismacontroller.post.findFirst({
@@ -37,9 +30,7 @@ async function Createpost(req, res) {
     });
 
     if (duplicate) {
-      return res
-        .status(409)
-        .json({ message: "A post with this title already exists" });
+      return res.status(409).json({ message: "A post with this title already exists" });
     }
 
     const result = await prismacontroller.post.create({
@@ -55,9 +46,10 @@ async function Createpost(req, res) {
     });
 
     return res.status(201).json({ data: result });
+
   } catch (error) {
     console.error(error);
-    return res.status(400).json({ message: "Failed to create post" });
+    return res.status(500).json({ message: "Failed to create post" });
   }
 }
 

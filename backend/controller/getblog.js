@@ -24,7 +24,6 @@ async function getspecificblog(req, res) {
 async function getallblogs(req, res) {
     const result = await prismacontroller.post.findMany();
 
-    console.log(result);
     res.json(result);
 }
 

@@ -15,7 +15,7 @@ blogroute.get('/allblog', Authuser, VerifyAccess, getallblogs)
 
 // Restful
 
-blogroute.post('/blog', Authuser, VerifyAccess, Createpost)
+blogroute.post('/Createblog', Authuser, VerifyAccess, Createpost)
 
 blogroute.put('/blog/:postid', Authuser, VerifyAccess, editPost)
 
