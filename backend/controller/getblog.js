@@ -13,11 +13,12 @@ async function getblog(req, res) {
 }
 
 async function getspecificblog(req, res) {
-    const result = await prismacontroller.post.findUnique({
+    const result = await prismacontroller.post.findFirst({
         where: {
             postid: parseInt(req.params.postid)
         }
     })
+
     res.json(result)
 }
 

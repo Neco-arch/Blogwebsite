@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Editor } from "@tinymce/tinymce-react";
+import Editform from "./Editform";
 
 axios.interceptors.request.use((config) => {
   const token = localStorage.getItem("authtoken");
@@ -20,7 +21,12 @@ function Dashboard() {
     content: "Start typing here...",
     status: "",
   });
+
+  // Edit and Create Form 
+  const [editpostdata , Seteditpostdata] = useState()
   const [OCdialog, setOCdialog] = useState(false);
+  const [OCeditdialog , setOCeditdialog] = useState(false)
+  const [articleinfocus , changearticleinfocus] = useState(0)
 
   const callApi = async () => {
     try {
@@ -78,7 +84,6 @@ function Dashboard() {
         username: userdata.user,
         userid: parseInt(userdata.userid)
       }
-      console.log(data)
       const result = await axios.post(
         "http://localhost:5000/Createblog",
         data
@@ -94,7 +99,9 @@ function Dashboard() {
     }
   };
 
-  const editpost = async (e) => {
+  const openeditform = (e,value) => {
+    changearticleinfocus(value.postid)
+    setOCeditdialog(true)
   }
 
   useEffect(() => {
@@ -122,8 +129,10 @@ function Dashboard() {
             <div key={index}>
                 <h2>{value.title}</h2>
                 <h3>status : {value.poststatus}</h3>
-
-            </div>
+                <button onClick={(e) => {
+                    openeditform(e,value)
+                }}>Edit</button>
+            </div> 
         ))}
       </div>
       <dialog open={OCdialog} className="Createnewpost">
@@ -144,6 +153,7 @@ function Dashboard() {
             init={{
               height: 500,
               menubar: false,
+              promotion: false,
               plugins: [
                 "lists",
                 "link",
@@ -169,9 +179,9 @@ function Dashboard() {
           Close Dialog
         </button>
       </dialog>
-      <dialog>
-        
-      </dialog>
+      <Editform articleid={articleinfocus} open={OCeditdialog} onClose={() => { setOCeditdialog(false)  }}>
+          
+      </Editform>
     </>
   );
 }
