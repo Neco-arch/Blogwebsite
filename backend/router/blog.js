@@ -1,7 +1,7 @@
 const express = require('express')
 const { getblog, getspecificblog, getallblogs } = require('../controller/getblog')
 const { Authuser, VerifyAccess } = require('../controller/authuser')
-const { Createpost, editPost, Deletepost, ReleasePost, VistBlogpanel } = require('../controller/crudblog')
+const { Createpost, editPost, Deletepost, ReleasePost, VistBlogpanel, Unreleasepost } = require('../controller/crudblog')
 
 const blogroute = express()
 
@@ -22,6 +22,8 @@ blogroute.put('/blog/:postid', Authuser, VerifyAccess, editPost)
 blogroute.delete('/blog/:postid', Authuser, VerifyAccess, Deletepost)
 
 blogroute.patch('/blog/:postid', Authuser, VerifyAccess, ReleasePost)
+
+blogroute.patch('/blog/:postid/unrelease', Authuser, VerifyAccess, Unreleasepost)
 
 
 module.exports = blogroute

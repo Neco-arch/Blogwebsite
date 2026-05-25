@@ -2,6 +2,7 @@ import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { Editor } from "@tinymce/tinymce-react";
 import Editform from "./Editform";
+import ChangeStatus from "./Changestatus";
 
 axios.interceptors.request.use((config) => {
   const token = localStorage.getItem("authtoken");
@@ -27,6 +28,10 @@ function Dashboard() {
   const [OCdialog, setOCdialog] = useState(false);
   const [OCeditdialog , setOCeditdialog] = useState(false)
   const [articleinfocus , changearticleinfocus] = useState(0)
+
+  //Change status Form
+
+  const [status_dialog , setstatus_dialog] = useState(false)
 
   const callApi = async () => {
     try {
@@ -104,6 +109,13 @@ function Dashboard() {
     setOCeditdialog(true)
   }
 
+  // openstatusdialog 
+
+  const openstatusdialog = (e,value) => {
+    changearticleinfocus(value.postid)
+    setstatus_dialog(true)
+  }
+
   useEffect(() => {
     callApi();
     decodetoken();
@@ -132,6 +144,9 @@ function Dashboard() {
                 <button onClick={(e) => {
                     openeditform(e,value)
                 }}>Edit</button>
+                <button  onClick={(e) => {
+                  openstatusdialog(e,value)
+                }}>Change Status</button>
             </div> 
         ))}
       </div>
@@ -182,6 +197,10 @@ function Dashboard() {
       <Editform articleid={articleinfocus} open={OCeditdialog} onClose={() => { setOCeditdialog(false)  }}>
           
       </Editform>
+
+      <ChangeStatus openstatus={status_dialog} articleid={articleinfocus} onClose={() => { setstatus_dialog(false )}}>
+
+      </ChangeStatus>
     </>
   );
 }

@@ -58,12 +58,12 @@ async function editPost(req, res) {
     const { postid } = req.params;
     const { newtitle, newcontent } = req.body;
 
-    // Validation
     if (!postid) {
       return res.status(400).json({ message: "Post ID is missing" });
     }
 
     const convertedPostId = parseInt(postid);
+
     if (isNaN(convertedPostId)) {
       return res.status(400).json({ message: "Post ID must be a number" });
     }
@@ -82,9 +82,13 @@ async function editPost(req, res) {
     });
 
     return res.status(200).json({ data: result });
+
   } catch (error) {
+    if (error.code === "P2025") {
+      return res.status(404).json({ message: "Post not found" });
+    }
     console.error(error);
-    return res.status(400).json({ message: "Failed to edit post" });
+    return res.status(500).json({ message: "Failed to edit post" });
   }
 }
 
@@ -92,24 +96,28 @@ async function Deletepost(req, res) {
   try {
     const { postid } = req.params;
 
-    if (postid === undefined) {
-      res.json("Post id is missing");
-    }
-
-    if (typeof parseInt(postid) !== "number") {
-      res.json("Post id isn't a number");
+    if (!postid) {
+      return res.status(400).json({ message: "Post ID is missing" });
     }
 
     const converted = parseInt(postid);
+
+    if (isNaN(converted)) {
+      return res.status(400).json({ message: "Post ID must be a number" });
+    }
 
     await prismacontroller.post.delete({
       where: { postid: converted },
     });
 
     return res.status(200).json({ message: "Post deleted successfully" });
+
   } catch (error) {
+    if (error.code === "P2025") {
+      return res.status(404).json({ message: "Post not found" });
+    }
     console.error(error);
-    return res.status(400).json({ message: "Failed to delete post" });
+    return res.status(500).json({ message: "Failed to delete post" });
   }
 }
 
@@ -117,15 +125,15 @@ async function ReleasePost(req, res) {
   try {
     const { postid } = req.params;
 
-    if (postid === undefined) {
-      res.json("Post id is missing");
-    }
-
-    if (typeof parseInt(postid) !== "number") {
-      res.json("Post id isn't a number");
+    if (!postid) {
+      return res.status(400).json({ message: "Post ID is missing" });
     }
 
     const converted = parseInt(postid);
+
+    if (isNaN(converted)) {
+      return res.status(400).json({ message: "Post ID must be a number" });
+    }
 
     await prismacontroller.post.update({
       where: { postid: converted },
@@ -133,9 +141,34 @@ async function ReleasePost(req, res) {
     });
 
     return res.status(200).json({ message: "Post published successfully" });
+
   } catch (error) {
+    if (error.code === "P2025") {
+      return res.status(404).json({ message: "Post not found" });
+    }
     console.error(error);
-    return res.status(400).json({ message: "Failed to release post" });
+    return res.status(500).json({ message: "Failed to release post" });
+  }
+}
+
+async function Unreleasepost(req, res) {
+  try {
+    const { postid } = req.params;
+
+    const converted = parseInt(postid);
+
+    if (isNaN(converted)) {
+      return res.status(400).json({ message: "Post ID must be a number" });
+    }
+
+    await prismacontroller.post.update({
+      where: { postid: converted },
+      data: { poststatus: "draft" },
+    });
+
+    return res.status(200).json({ message: "Post published successfully" });
+  } catch (error) {
+    console.log(error)
   }
 }
 
@@ -145,4 +178,5 @@ module.exports = {
   Deletepost,
   ReleasePost,
   VistBlogpanel,
+  Unreleasepost,
 };
