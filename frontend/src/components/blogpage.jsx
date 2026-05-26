@@ -15,7 +15,7 @@ function BlogSpecificPage() {
     useEffect(() => {
         axios.get('http://localhost:5000/blog/' + postid).then((value) => {
             saveData(value.data);
-            console.log(value.data); // 
+            console.log(value.data); 
         });
     }, [postid]); // 
 

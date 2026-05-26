@@ -17,6 +17,7 @@ function Renderlogin() {
         try {
             const response = await axios.post('http://localhost:5000/login' , formdata)
             window.localStorage.setItem('authtoken' , response.data.token)
+            window.localStorage.setItem('islogin' , true)
             axios.interceptors.request.use((config) => {
                 const token = localStorage.getItem('authtoken')
                 if (token) {

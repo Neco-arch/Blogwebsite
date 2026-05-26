@@ -85,7 +85,8 @@ function Dashboard() {
     setOCdialog(false)
     e.preventDefault();
     try {
-        const data = {...Newpostdata , 
+        const data = {...Newpostdata ,
+        content : Newpostdata.content.replace(/<\/?p>/g, ''), 
         username: userdata.user,
         userid: parseInt(userdata.userid)
       }
@@ -164,7 +165,7 @@ function Dashboard() {
           <Editor
             apiKey={import.meta.env.VITE_API_KEY}
             onInit={(evt, editor) => (editorRef.current = editor)}
-            initialValue="<p>Start typing here...</p>"
+            initialValue="Start typing here..."
             init={{
               height: 500,
               menubar: false,

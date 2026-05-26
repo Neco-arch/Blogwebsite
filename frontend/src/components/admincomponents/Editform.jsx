@@ -40,7 +40,7 @@ const handlesubmit = async (e) => {
   try {
     const result = await axios.put('http://localhost:5000/blog/' + articleid, {
       newtitle: formdata.title,
-      newcontent: formdata.content,
+      newcontent: formdata.content.replace(/<\/?p>/g, ''),
     });
     onClose();
     window.location.href = "http://localhost:5173/blogpanel"
@@ -69,7 +69,7 @@ useEffect(() => {
           <Editor
             apiKey={import.meta.env.VITE_API_KEY}
             onInit={(evt, editor) => (editorRef.current = editor)}
-            initialValue="<p>Start typing here...</p>"
+            initialValue="Start typing here..."
             init={{
               height: 500,
               promotion: false,
